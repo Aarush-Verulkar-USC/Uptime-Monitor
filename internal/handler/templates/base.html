@@ -1,0 +1,67 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uptime Monitor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Space Grotesk"', 'sans-serif'] },
+                    colors: {
+                        cream:  { 50: '#FFFDF7', 100: '#FEF7EC', 200: '#FBE9C7', 300: '#E8DCC8' },
+                        gold:   { 400: '#E8A000', 500: '#D4930D', 600: '#B87A00' },
+                        ink:    { 900: '#1A1A1A', 700: '#3D3830', 500: '#6B6355', 300: '#A39E94' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; }
+        .pulse-up  { animation: pup 2s ease-in-out infinite; }
+        .pulse-dn  { animation: pdn 2s ease-in-out infinite; }
+        @keyframes pup { 0%,100%{box-shadow:0 0 0 0 rgba(45,138,57,.35)} 50%{box-shadow:0 0 0 7px rgba(45,138,57,0)} }
+        @keyframes pdn { 0%,100%{box-shadow:0 0 0 0 rgba(209,52,56,.35)} 50%{box-shadow:0 0 0 7px rgba(209,52,56,0)} }
+        @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        .ticker-scroll { animation: ticker 30s linear infinite; }
+        .ticker-scroll:hover { animation-play-state: paused; }
+    </style>
+</head>
+<body class="bg-cream-100 text-ink-900 min-h-full">
+    <!-- Navbar -->
+    <nav class="border-b border-cream-300 bg-cream-50/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-ink-900 rounded-full flex items-center justify-center">
+                    <svg class="w-4 h-4 text-gold-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg>
+                </div>
+                <span class="text-xl font-bold tracking-tight">Uptime Monitor</span>
+            </a>
+            <div class="flex items-center gap-3">
+                <a href="/" class="text-sm font-medium text-ink-500 hover:text-ink-900 transition">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-10">
+        {{template "content" .}}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-cream-300 mt-16">
+        <div class="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between text-sm text-ink-300">
+            <span>Uptime Monitor &middot; Built with Go, PostgreSQL, Redis</span>
+            <span>HTMX + Tailwind &middot; No JavaScript frameworks</span>
+        </div>
+    </footer>
+</body>
+</html>
+{{end}}
