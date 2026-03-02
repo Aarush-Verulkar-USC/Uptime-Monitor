@@ -6,32 +6,7 @@ Includes a server-rendered dashboard (Go templates + HTMX) that auto-refreshes e
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    Client["Browser / REST Client\n(port 8080)"]
-
-    subgraph Server["Go HTTP Server (single binary)"]
-        Router["chi Router"]
-        Handler["Handler Layer"]
-
-        subgraph Sched["Scheduler"]
-            L1["Goroutine — Loop 1\n(ticker: 30s)"]
-            L2["Goroutine — Loop 2\n(ticker: 30s)"]
-            LN["Goroutine — Loop N\n(ticker: 30s)"]
-            Checker["Checker\nHTTP GET + timer"]
-            L1 & L2 & LN --> Checker
-        end
-    end
-
-    PG[("PostgreSQL\nmonitors · checks · incidents\ntime-series + aggregates")]
-    Redis[("Redis\nmonitor:status:{id}\nlive status cache — 5 min TTL")]
-
-    Client --> Router --> Handler
-    Handler -- "historical queries" --> PG
-    Handler -- "read live status" --> Redis
-    Checker -- "INSERT check result" --> PG
-    Checker -- "SET status cache" --> Redis
-```
+![Architecture](architecture.svg)
 
 Two independent processes run in the same Go binary: the **HTTP server** handles API requests and the dashboard, while the **Scheduler** runs background goroutines that continuously perform health checks — even with no users on the dashboard.
 
